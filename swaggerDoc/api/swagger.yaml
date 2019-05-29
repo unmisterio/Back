@@ -1,0 +1,125 @@
+---
+swagger: "2.0"
+info:
+  description: "Esta es una documentación API"
+  version: "1.0.0"
+  title: "Grupo Misterio API"
+host: "virtserver.swaggerhub.com"
+basePath: "/Misterio/prueba/1.0.0"
+tags:
+- name: "admins"
+- name: "Estudiante"
+schemes:
+- "https"
+paths:
+  /convocatorias:
+    get:
+      tags:
+      - "Estudiante"
+      summary: "Obteniendo convocatorias de interes"
+      description: "Al pasar por las opciones apropiadas, puede buscar en el inventario\
+        \ disponible una convocatoria de interes\n"
+      operationId: "search"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "searchString"
+        in: "query"
+        description: "Recibe un String para filtrar la busqueda"
+        required: false
+        type: "string"
+      - name: "city"
+        in: "query"
+        description: "Lista las convocatorias por una ciudad determinado"
+        required: false
+        type: "integer"
+        minimum: 0
+        format: "int32"
+      - name: "university"
+        in: "query"
+        description: "Lista las convocatorias por una universidad determinada"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Convocatorias encontradas según los criterios de busqueda"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Inventory"
+        400:
+          description: "Error - Datos invalidos bad input parameter"
+      x-swagger-router-controller: "Estudiante"
+    post:
+      tags:
+      - "admins"
+      summary: "Agrega convocatorias"
+      description: "Agrega una convocatoria al listado de convocatorias activas"
+      operationId: "addCall"
+      parameters:
+      - name: "description"
+        in: "query"
+        description: "Descripción  de la convocatoria"
+        required: true
+        type: "string"
+      - name: "universidad"
+        in: "query"
+        description: "Selección universidad que postula"
+        required: true
+        type: "string"
+      responses:
+        201:
+          description: "Convocatoria creada"
+        400:
+          description: "Error - Datos invalidos"
+        409:
+          description: "Error - Existe una convocatoria con las mismas caracteristicas"
+      x-swagger-router-controller: "Admins"
+definitions:
+  Inventory:
+    type: "object"
+    required:
+    - "id"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+        example: "521"
+      description:
+        type: "string"
+        example: "Convocatoria abierta para estudiantes de ingenieria de sistemas\
+          \ UNAL"
+      universidad:
+        $ref: "#/definitions/University"
+    example:
+      description: "Convocatoria abierta para estudiantes de ingenieria de sistemas\
+        \ UNAL"
+      universidad:
+        city: "Ciudad de Mexico, Mexico"
+        phone: "408-867-5309"
+        name: "UNAM"
+        homePage: "https://www.unam.mx/"
+      id: "521"
+  University:
+    required:
+    - "city"
+    - "name"
+    properties:
+      name:
+        type: "string"
+        example: "UNAM"
+      homePage:
+        type: "string"
+        format: "url"
+        example: "https://www.unam.mx/"
+      city:
+        type: "string"
+        example: "Ciudad de Mexico, Mexico"
+      phone:
+        type: "string"
+        example: "408-867-5309"
+    example:
+      city: "Ciudad de Mexico, Mexico"
+      phone: "408-867-5309"
+      name: "UNAM"
+      homePage: "https://www.unam.mx/"
