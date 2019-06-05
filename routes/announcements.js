@@ -6,8 +6,15 @@ class Announcement{
         this.idAnnouncement = null;
         this.name = null;
         this.description = null;
-        this.Target_University_idTarget_University = null;
+        this.idTargetUniversity = null;
+        this.vacant = null;
+        this.releaseDate = null;
+        this.closureDate = null;
     }
+}
+
+function get(req,res){
+
 }
 
 module.exports.get = (req,res) => {
@@ -20,14 +27,15 @@ module.exports.get = (req,res) => {
         query = `SELECT * FROM Announcement limit ${from},${nRows}`;
     }
     connection.query(query, (error,results,fields)=>{
+        console.log(error);
         let targetUniversities = "";
-        for(let e in results) targetUniversities += `or idTarget_University = ${results[e].Target_University_idTarget_University} `;
+        for(let e in results) targetUniversities += `or idTarget_University = ${results[e].idTargetUniversity} `;
         connection.query(`SELECT * FROM Target_University WHERE ${targetUniversities.substring(3,targetUniversities.length-1)}`, (error,resultsU,fields)=>{
             univInfo = {};
             for (let e in resultsU) univInfo[resultsU[e].idTarget_University] = resultsU[e];
             for (let e in results){
-                results[e].targetUniversityInfo = univInfo[results[e].Target_University_idTarget_University];
-                delete results[e].Target_University_idTarget_University;
+                results[e].targetUniversityInfo = univInfo[results[e].idTargetUniversity];
+                delete results[e].idTargetUniversity;
             }
             res.status(200).send(results);
         });
