@@ -1,10 +1,12 @@
 const express = require('express');
+const Cors = require('cors');
 const routes = require('./routes'); 
 const bodyParser = require('body-parser');
 
 const PORT = 3000;
 const app = express();
 
+app.use(Cors());
 app.use(bodyParser.json());
 
 app.get('/targetUniversity',routes.targetUniversity.get);
